@@ -18,11 +18,13 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: `${siteConfig.name} — Engineering for final-year projects`,
     template: `%s — ${siteConfig.name}`,
   },
   description: siteConfig.shortDescription,
+  alternates: { canonical: "/" },
   keywords: [
     "final year project",
     "mechanical engineering project",
@@ -37,6 +39,8 @@ export const metadata: Metadata = {
     title: `${siteConfig.name} — Engineering for final-year projects`,
     description: siteConfig.shortDescription,
     siteName: siteConfig.legalName,
+    url: siteConfig.url,
+    locale: "en_NG",
     type: "website",
   },
   robots: { index: true, follow: true },

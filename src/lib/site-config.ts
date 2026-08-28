@@ -22,6 +22,16 @@ export const siteConfig = {
     "An engineering studio that helps university students turn difficult final-year projects into designed, fabricated, tested prototypes.",
 
   /**
+   * Canonical origin, no trailing slash. Used for `metadataBase`, the canonical
+   * link and OpenGraph — link previews and search results resolve against it,
+   * so it must be the live domain rather than a preview URL.
+   */
+  url: publicValue(
+    process.env.NEXT_PUBLIC_SITE_URL,
+    "https://finalyearprojects.online",
+  ).replace(/\/$/, ""),
+
+  /**
    * Contact routes. Replace via .env.local — do not hard-code real numbers here.
    * WHATSAPP_NUMBER must be international format, digits only (e.g. 2348012345678).
    */
