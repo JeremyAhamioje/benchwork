@@ -23,12 +23,16 @@ export const siteConfig = {
 
   /**
    * Canonical origin, no trailing slash. Used for `metadataBase`, the canonical
-   * link and OpenGraph — link previews and search results resolve against it,
-   * so it must be the live domain rather than a preview URL.
+   * link and OpenGraph.
+   *
+   * This must be the host that actually serves the page. The deployment makes
+   * `www` primary and 308s the apex to it, so an apex value here would point
+   * the canonical link and og:image at a redirect — a contradictory signal to
+   * crawlers and to scrapers that do not follow redirects on image URLs.
    */
   url: publicValue(
     process.env.NEXT_PUBLIC_SITE_URL,
-    "https://finalyearprojects.online",
+    "https://www.finalyearprojects.online",
   ).replace(/\/$/, ""),
 
   /**
