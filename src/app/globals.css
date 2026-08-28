@@ -1,0 +1,256 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens — industrial / workshop palette.
+   Dark by default and committed: this site has one look, not two.
+   ========================================================================== */
+
+@theme {
+  --color-ink: #08090a; /* page ground */
+  --color-graphite: #0d0f11; /* raised ground */
+  --color-steel: #131619; /* cards */
+  --color-steel-2: #191d21; /* card hover */
+  --color-line: #262a30; /* hairlines */
+  --color-line-soft: #1a1e22;
+  --color-bone: #ecebe7; /* primary text */
+  --color-muted: #8b929c; /* secondary text */
+  --color-faint: #5b626b; /* tertiary text */
+  --color-signal: #ff0000; /* the one accent */
+  --color-signal-deep: #c40000;
+  --color-blueprint: #2f5d8c; /* technical line work */
+
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-display);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  /* Nothing on this page may cause a sideways scroll on a phone. */
+  overflow-x: clip;
+}
+
+::selection {
+  background-color: var(--color-signal);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Sticky header clearance for in-page anchors. */
+section[id],
+div[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* ==========================================================================
+   Typographic utilities
+   ========================================================================== */
+
+/* Small technical label: the recurring "engineering document" texture. */
+.tech {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.display {
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.balance {
+  text-wrap: balance;
+}
+
+/* ==========================================================================
+   Surfaces
+   ========================================================================== */
+
+/* Blueprint grid, fading out downward. Purely decorative. */
+.blueprint {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-blueprint) 26%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-blueprint) 26%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 64px 64px;
+}
+
+.blueprint-fine {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-blueprint) 16%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-blueprint) 16%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 16px 16px;
+}
+
+/* Hazard hatching — reserved for the disabled "coming soon" surface. */
+.hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    color-mix(in srgb, var(--color-signal) 7%, transparent) 0 6px,
+    transparent 6px 14px
+  );
+}
+
+.noise {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(255 255 255 / 0.035) 1px,
+    transparent 0
+  );
+  background-size: 4px 4px;
+}
+
+/* Corner ticks: the CAD-drawing frame marks used on cards. */
+.ticked::before,
+.ticked::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--color-line);
+  border-style: solid;
+  pointer-events: none;
+  transition: border-color 0.3s var(--ease-out-expo);
+}
+.ticked::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+.ticked::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+}
+.group:hover .ticked::before,
+.group:hover .ticked::after {
+  border-color: var(--color-signal);
+}
+
+/* ==========================================================================
+   Behaviour helpers
+   ========================================================================== */
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Fades the ends of a horizontal scroller so it reads as "more to the right". */
+.edge-fade {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 3%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 3%,
+    black 92%,
+    transparent
+  );
+}
+
+@media (max-width: 768px) {
+  .edge-fade {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+/* Native select arrow removal — replaced by our own marker. */
+.bare-select {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+.animate-sweep {
+  animation: sweep 1.6s var(--ease-out-expo) infinite;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
