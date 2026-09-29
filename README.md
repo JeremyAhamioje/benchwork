@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Benchwork
 
-## Getting Started
+A studio site for an engineering and fabrication practice, built around one thing a brochure site cannot do: give a visitor a real cost estimate from the brief they already have.
 
-First, run the development server:
+**Live:** https://benchwork-ten.vercel.app · Next.js · TypeScript · Google Gemini
+
+---
+
+## The idea
+
+Most studio sites end at a contact form, which asks the visitor to do the work of describing their project a second time. Benchwork takes the document they already wrote — a brief, a spec, a scope of work — and returns an estimate from it.
+
+Upload a PDF or Word document, and the estimator extracts the text, sends it to Gemini for analysis against the studio's disciplines and capabilities, and returns a structured estimate the visitor can carry into a booking.
+
+## What is interesting in the build
+
+- **Document extraction happens server-side and format-agnostically.** `unpdf` for PDFs, `mammoth` for Word, behind one `extractDocumentText` interface with a typed `DocumentError`, so the route handles "this file is corrupt" and "this file is 90MB" as different, explainable outcomes rather than a 500.
+- **Rate limiting without accounts.** An estimate costs a model call, so it has to be metered — but putting a login in front of a lead-generation tool defeats the tool. The limiter combines a session cookie with a client fingerprint and tracks allowance per visitor, so a first estimate is free and abuse is still bounded.
+- **The model is optional, not assumed.** `isGeminiConfigured` gates the feature, so the site deploys and runs correctly with no API key — the estimator simply does not offer itself rather than erroring at the visitor.
+- **Uploads are capped and sanitised** (`MAX_UPLOAD_BYTES`, `sanitiseText`) before any text reaches the model.
+- Input is validated with **Zod** at the boundary, so malformed requests fail with a message instead of propagating.
+
+## Stack
+
+Next.js (App Router) · TypeScript · `@google/genai` · `unpdf` + `mammoth` for document parsing · Zod · Motion · Tailwind
+
+## Running locally
 
 ```bash
+cp .env.example .env.local   # add your Gemini API key
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The site runs without a key — the estimator is simply hidden.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built by [Jeremy Ahamioje](https://github.com/JeremyAhamioje).
